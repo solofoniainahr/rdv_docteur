@@ -1,0 +1,31 @@
+@import "~bootstrap";
+
+.alert {
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+
+    &.alert-success {
+    background-color: green;
+    }
+    &.alert-error {
+        background-color: red;
+    }
+
+    &.alert-info {
+        background-color: blue;
+    }
+    &.alert-warning {
+        background-color: orange;
+    }
+
+}
+
+.form-search-doctor {
+    background-color: #F8F8FF;
+    border: 1px solid #E6E6FA;
+
+}
