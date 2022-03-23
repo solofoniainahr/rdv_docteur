@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomePageController!{% endblock %}
+{% block title 'Recherche médecin' %}
 
 {% block body %}
     <div class="container mt-2 pt-5 form-search-doctor">
         {{ form_start(form)}}
             <div class="row">
+            
                 <div class="col-md-4">
                     {{ form_row(form.firstname, {'attr': {'class': 'form-control-sm'}})}}
                 </div>

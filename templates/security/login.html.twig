@@ -1,42 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
-
-{% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+    {% block title 'Log in!' %}
+    
+    {% block body %}
+        <div class="row">
+            <div class="col-md-6 mt-5 mx-auto shadow border-1 rounded border-primary">
+                <form method="post" novalidate>
+                    {% if error %}
+                        <div class="alert alert-error rounded mb-3" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+    
+                    {#% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                        </div>
+                    {% endif %#}
+    
+                    <h1 class="h3 mb-3 mt-3 font-weight-normal text-center">
+                        Please sign in
+                    </h1>
+                    <div class="form-group">
+                        <label for="password">Email</label>
+                        <input type="email" value="{{ last_username }}" name="email" id="password" class="form-control" required autofocus>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
+    
+    
+                    <div class="d-flex justify-content-between">                
+                        <div class="form-check checkbox mb-3">
+                            <input class="form-check-input" type="checkbox" name="_remember_me" id="remeber_me">
+                            <label class="form-check-label" for="defaultCheck1">
+                                Souviens de moi
+                            </label>
+                        </div>
+                        <a href="#">Mot de passe oublié</a>
+                    </div>
+                    
+    
+                    
+                    {#Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                    See https://symfony.com/doc/current/security/remember_me.html#}
+    
+                    
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">
+                        Sign in
+                    </button>
+                    <p class="mt-5 mb-3 text-muted text-center">Pas encore enregistré ? <a href="#">Créer une compte</a></p>
+                </form>
+            </div>
         </div>
-    {% endif %}
-
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
-
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
-        </div>
-    #}
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
-{% endblock %}
+    
+    {% endblock %}
+    
