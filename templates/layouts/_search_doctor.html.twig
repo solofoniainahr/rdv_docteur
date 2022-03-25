@@ -1,0 +1,21 @@
+{{ form_start(form)}}
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.firstname, {'attr': {'class': 'form-control-sm'}})}}
+        </div>
+        <div class="col-md-4 ">
+            {{ form_row(form.lastname, {'attr': {'class': 'form-control-sm'}})}}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.speciality, {'attr': {'class': 'form-control-sm'}})}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.location, {'attr': {'class': 'form-control-sm'}})}}
+        </div>
+        <div class="col-md-4">
+            <input type="submit" value="Rechercher" class="btn btn-primary btn-block btn-sm">
+        </div>
+    </div>
+{{ form_end(form)}}

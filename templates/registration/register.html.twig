@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    
+    <div class="row">
+        <div class="col-md-9 mt-4 bg-light mx-auto border shadow-sm">
+            <h3 class="text-center mt-4 mb-3 text-muted">Inscrivez vous ici</h3>
+            {{ form_start(registrationForm, {'attr': {'novalidate':'novalidate'}}) }}
+                <div class="row p-3">
+                    <div class="col-md-2 border-dark">
+                        <img id="previewImg" style="max-height: 120px; max-width: 120px;" class="mt-2 rounded-circle img-fluid" id="previewImg" src="{{ asset('images/avatar.png') }}">
+                        {{ form_row(registrationForm.imageFile) }}
+                    </div>
+                    <div class="col-md-10 border-dark">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.firstname)}}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.lastname) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.email) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.plainPassword) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                {{ form_row(registrationForm.adress)}}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ form_row(registrationForm.is_doctor)}}
+                            </div>
+                        </div>
+                        <div id="doctor_info" class="row d-none">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.speciality) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.clini) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.agreeTerms) }}
+                            </div>
+                            <div class="col-md-6">
+                                {#{ form_row(registrationForm.clini) }#}
+                            </div>
+                        </div>
+               
+                            <button type="submit" class="btn btn-primary btn-sm btn-block">Enregistrer</button>
+                       
+                    </div>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+    {% endblock %}
+    
+   {#  {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Password'
+        }) }}
+        {{ form_row(registrationForm.agreeTerms) }}
+
+        <button type="submit" class="btn">Register</button>
+    {{ form_end(registrationForm) }} #}
