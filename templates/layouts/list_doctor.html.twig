@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-10 mt-5">
+        {% if doctors|length > 0 %}
+            {% for doctor in doctors %}
+                <div class="row bg-white mt-2 rounded shadow">
+                    <div class="col-md-3 p-3">
+                        <img class="w-100 mh-100 thumbnail rounded-circle" 
+                            src="{{ (vich_uploader_asset(doctor) ) }}" 
+                             alt="{{ doctor.fullName }}" />
+                    </div>
+                    <div class="col-md-9 ">
+                        <div class="mw-100 overflow-hidden rounded-top">
+                            <p class="text-primary mt-4 text-uppercase">Dr {{ doctor.fullName}}</p>
+                            <p >
+                                <span class="badge badge-success">{{ doctor.speciality.name}}</>
+                            </p>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p class="text-muted">
+                                        {{ doctor.adress }}
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="#" class="btn btn-primary btn-sm float-right text-uppercase">PRENDRE RENDEZ-VOUS</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+    </div>
+    <div class="col-md-2 v">Pub</div>
+</div>

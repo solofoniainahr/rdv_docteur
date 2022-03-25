@@ -15,9 +15,9 @@ class SearchDoctorData
     public string $lastname;
 
     /**
-     * @var string
+     * @var []
      */
-    public string $speciality;
+    public $speciality;
 
     /**
      * @var string

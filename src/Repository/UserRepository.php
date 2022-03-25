@@ -3,13 +3,14 @@
 namespace App\Repository;
 
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
+use App\Data\SearchDoctorData;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -46,6 +47,38 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function findDoctor(SearchDoctorData $data)
+    {
+  
+        $query = $this->createQueryBuilder('u')
+                      ->select('u', 's')
+                      ->join('u.speciality', 's');
+
+        if ( !empty($data->firstname) ) {
+            $query = $query->andWhere('u.firstname LIKE :firstname')
+                           ->setParameter('firstname', "%{$data->firstname}%");
+        }
+
+        if ( !empty($data->lastname) ) {
+            $query = $query->andWhere('u.lastname LIKE :lastname')
+                           ->setParameter('lastname', "%{$data->lastname}%");
+        }
+
+        if ( !empty($data->speciality) ) {
+            $query = $query->andWhere('s.id =:speciality')
+                           ->setParameter('speciality', $data->speciality);
+        }
+
+        if ( !empty($data->location) ) {
+            $query = $query->andWhere('s.id =:location')
+                           ->setParameter('location', $data->location);
+        }
+        $query = $query->orderBy('u.id', 'DESC');
+        $query = $query->andWhere('u.is_doctor = 1');
+        
+        return $query->getQuery()->getResult();
     }
 
     /**

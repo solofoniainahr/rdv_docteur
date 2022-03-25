@@ -6,4 +6,7 @@
     <div class="container mt-2 pt-5 form-search-doctor">
         {% include "layouts/_search_doctor.html.twig" with { form: form } %}
     </div>
+    <div class="container">            
+        {% include "layouts/list_doctor.html.twig" with { doctors: doctors } %}
+    </div>
 {% endblock %}

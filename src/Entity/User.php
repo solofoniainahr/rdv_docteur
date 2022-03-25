@@ -300,6 +300,11 @@ class User implements UserInterface, \Serializable
         return $this->imageName;
     }
 
+    public function fullName()
+    {
+        return $this->getFirstname().' '.$this->getLastname();
+    }
+
 
     public function serialize() {
 

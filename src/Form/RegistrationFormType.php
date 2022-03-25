@@ -34,7 +34,7 @@ class RegistrationFormType extends AbstractType
                 'download_label' => '...',
                 'download_uri' => true,
                 //'image_uri' => true,
-                //'imagine_pattern' => 'square_thumbnail_small',
+                'imagine_pattern' => 'square_thumbnail_small',
                 //'asset_helper' => true,
             ])
             ->add('firstname', TextType::class, [
