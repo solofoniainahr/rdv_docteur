@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Clinic;
+use App\Entity\Language;
 use App\Entity\Speciality;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -132,6 +133,28 @@ class RegistrationFormType extends AbstractType
                 'placeholder' => 'Choisissez un clinic',
                 'attr' => [
                     'class' => 'form-control-sm'
+                ]
+            ])
+            ->add('language', EntityType::class, [
+                'label'         => false,
+                'required'      => false, 
+                'class'         => Language::class,
+                'multiple'      => true, 
+                'expanded'      => false,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('l')
+                              ->orderBy('l.name', 'ASC');
+                    
+                }, 
+                'placeholder'   => 'Choissez une ou plusieurs langages',
+                'attr'          => [
+                    'class' => 'form-control-sm select-language'
+                ] 
+            ])
+            ->add('town', TextType::class, [
+                'label' => false,
+                'attr'  => [
+                    'placeholder'   => 'Votre ville'
                 ]
             ])
         

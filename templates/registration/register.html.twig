@@ -38,12 +38,20 @@
                                 {{ form_row(registrationForm.is_doctor)}}
                             </div>
                         </div>
-                        <div id="doctor_info" class="row d-none">
+                        <div id="doctor_info" class="doctor_info row d-none">
                             <div class="col-md-6">
                                 {{ form_row(registrationForm.speciality) }}
                             </div>
                             <div class="col-md-6">
                                 {{ form_row(registrationForm.clini) }}
+                            </div>
+                        </div>
+                        <div class="row doctor_info  d-none">
+                            <div class="col-md-6">
+                                {{ form(registrationForm.town)}}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.language, {'attr': {'class': 'select-language'}}) }}
                             </div>
                         </div>
                         <div class="row">
