@@ -2,19 +2,131 @@
 
 {% block title %}Hello DoctorController!{% endblock %}
 
+{% block nocontainer %}
+    <div class="row mt-3 shadow-sm justify-content-md-center py-3 ">
+        <div class="col-md-3 mx-auto">
+            <img src="{{ vich_uploader_asset(doctor) }}" class="img-thumbnail img-doctor" alt="{{ doctor.getFullName }}">
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-uppercase text-primary">DR {{ doctor.getFullName}}</h2
+            <p>
+                <span class="text-badge badge badge-success text-lowercase small badge-pill">{{ doctor.speciality.name}}</span>
+            </p>
+            <p class="text-muted">{{ doctor.town}}</p>
+        </div>
+    </div>
+{% endblock %}
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/rdv_docteur/src/Controller/DoctorController.php'|file_link(0) }}">src/Controller/DoctorController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/rdv_docteur/templates/doctor/index.html.twig'|file_link(0) }}">templates/doctor/index.html.twig</a></code></li>
-    </ul>
-</div>
+    {% if doctor.clini is not null %}
+        <div class="row p-2">
+            <div class="col-md-6">
+                <p class="text-muted font-weight-bold">{{ doctor.clini.name}}</p>
+                <address>
+                    <span>{{ doctor.clini.address}}</span>
+                    <br>
+                    <span>{{ doctor.clini.district}} {{ doctor.clini.town}}</span>
+                </address>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#requestRdv">
+                            Demander un rendez-vous
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+                            Voir tous les rendez-vous
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row p-2 ">
+            <div class="col">
+                <div class="row font-weight-bold">
+                    Spécilaités
+                </div>
+                <div class="row text-primary">
+                    {{ doctor.speciality.name}} 
+                </div>
+            </div>  
+        </div>
+        <hr>
+        {% set languages = '' %}
+        {% if doctor.language|length > 0 %}
+            <div class="row p-2">
+                <div class="col">
+                    <div class="row font-weight-bold">
+                        Langue  parlé
+                    </div>
+                    <div class="row text-primary">
+                    {#{{ dump(doctor.language[0].name) }}  #}                        
+                        {% for langue in doctor.language %}
+                            {{ langue }}    
+                            {#% if loop.last %}
+                                languages ~= langue;
+                            {% else %}
+                                languages ~= langue~", ";
+                            {% endif %#}
+                        {% endfor %}
+                    </div>
+                </div>  
+            </div>
+        {% endif %}
+    {% endif %}
+    <!--Modal-->
+    <div class="modal fade" id="requestRdv" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-muted " id="exampleModalLabel">Demande de rendez-vous </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {{ form_start(appointment_form) }}
+                <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.title, {'label': 'Titre'}) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.description, {'label': 'Description'}) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.start, {'label': 'Date et heure de début'}) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.end, {'label': 'Date et heure de fin'}) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.background_color, {'label': 'Couleur de fond'}) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.border_color, {'label': 'Couleur de bordure'}) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.text_color, {'label': 'Couleur de texte'}) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(appointment_form.allday, {'label': 'Toute la journée'}) }}
+                            </div>
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btn-close-modal-close-rdv" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button id="btn-close-modal-confirm-rdv" type="submit" class="btn btn-primary">Confirmer</button>
+                        </div>
+                </div>
+            {{ form_end(appointment_form) }}
+        </div>
+    </div>
 {% endblock %}

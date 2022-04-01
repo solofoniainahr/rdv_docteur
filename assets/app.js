@@ -17,6 +17,9 @@ import 'bootstrap';
 import 'select2'; // globally assign select2 fn to $ element
 import 'select2/dist/css/select2.css';
 
+/* import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid'; */
+
 $('document').ready(function() {
     $('.select-language').select2();
     $("input[type=file]").on('change', function(e) {
@@ -24,6 +27,23 @@ $('document').ready(function() {
     });
 
     showHideDoctorInfo();
+
+    // document.addEventListener('DOMContentLoaded', function() {
+    /* var calendarEl = document.getElementById('calendar');
+
+    var calendar = new Calendar(calendarEl, {
+        plugins: [dayGridPlugin]
+    });
+
+    calendar.render(); */
+    //});
+
+    //Close modal
+    $('#btn-close-modal-request-rdv').click(function() {
+        console.log("hereeee");
+        $('#btn-close-modal-close-rdv').click();
+    });
+
 });
 
 function previewFile(input) {
