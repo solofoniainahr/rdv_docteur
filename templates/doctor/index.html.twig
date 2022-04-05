@@ -14,6 +14,7 @@
             </p>
             <p class="text-muted">{{ doctor.town}}</p>
         </div>
+        
     </div>
 {% endblock %}
 {% block body %}
@@ -35,7 +36,8 @@
                         </button>
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+                        <button id="link-to-appointment"
+                            class="btn btn-success" data-toggle="modal" data-target="#modalSeeRdv">
                             Voir tous les rendez-vous
                         </button>
                     </div>
@@ -75,8 +77,16 @@
                 </div>  
             </div>
         {% endif %}
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="calendar"></div>
+                <input type="text" id="doctor-id" value="{{ doctor.id }}"/>
+                <input type="text" id="user-id" value="{{ app.user.id }}"/>
+            </div>
+        </div>
     {% endif %}
-    <!--Modal-->
+    <!--Modal Add RDV-->
     <div class="modal fade" id="requestRdv" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -129,4 +139,28 @@
             {{ form_end(appointment_form) }}
         </div>
     </div>
+    {#{  dump(datas) }#}
+    <!--End Modal Add RDV-->
 {% endblock %}
+{# {% block javascripts %}
+    <script>
+        window.onload = () => {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
+                //initialView: 'timeGridWeek',
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                timeZone: 'Europe/Paris',
+                headerToolbar: {
+                    start: 'prev,next today',
+                    center: 'title',
+                    end: 'dayGridMonth,timeGridWeek', 
+                },  
+                events: {{ datas|raw }},   
+            }); 
+            calendar.render();
+        };
+
+    </script> 
+{% endblock %}#}

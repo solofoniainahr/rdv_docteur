@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Appointment;
 use App\Form\AppointmentType;
+use App\Repository\AppointmentRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\Serializer\Encoder\JsonEncode;
 
 class DoctorController extends AbstractController
 {
@@ -22,7 +23,10 @@ class DoctorController extends AbstractController
      *
      * @return Response
      */
-    public function index(Request $request, $id, UserRepository $ur, EntityManagerInterface $em): Response
+    public function index(Request $request, $id, 
+                            UserRepository $ur, 
+                            EntityManagerInterface $em,
+                            AppointmentRepository $ar): Response
     { 
         //@IsGranted("ROLE_USER")
         
@@ -36,6 +40,9 @@ class DoctorController extends AbstractController
                 'controller_name' => 'DoctorController',
             ]);
         } */
+
+      
+    
         $appointment = new Appointment;
         $doctor =$ur->find($id);
 
@@ -57,11 +64,49 @@ class DoctorController extends AbstractController
             $this->addFlash('success', 'Votre rendez-vous a été bien crée');
         }
 
+        
         return $this->render('doctor/index.html.twig', [
             'doctor' => $doctor,
-            'appointment_form' => $appointment_form->createView()
+            'appointment_form' => $appointment_form->createView(),
         ]);
+    }
 
+    /**
+     * @Route("/appointment/load/{doctorId<[0-9]+>}",name="app_load_appointment")
+     * 
+     * @Security("is_granted('ROLE_USER')")
+     *
+     * @return void
+     */
+    public function loadAppointment(Request $request, 
+                                    AppointmentRepository $ar,
+                                    UserRepository $ur, 
+                                    $doctorId){
+        $rdvs = []; 
+        
+        $doctor =$ur->find($doctorId);
+        $dataRdv = [];
+        $appointments = $ar->findBy(['practitioner' => $doctor->getId()]);
+        if (count($appointments) ) {
+            foreach ($appointments as $rdv) {
+                $rdvs[] = [
+                    'id'              => $rdv->getId(),
+                    'title'           => $rdv->getTitle(),
+                    'description'     => $rdv->getDescription(),
+                    'start'           => $rdv->getStart()->format('Y-m-d H:i:s'),
+                    'end'             => $rdv->getEnd()->format('Y-m-d H:i:s'),
+                    'allDay'          => $rdv->getAllday(),
+                    'backgroundColor' => $rdv->getBackgroundColor(),
+                    'borderColor'     => $rdv->getBorderColor(),
+                    'textColor'       => $rdv->getTextColor()
+                ];
+            }
+            $dataRdv = json_encode($rdvs);
+        }
 
+        return new Response($dataRdv);
+        
     }
 }
+
+
