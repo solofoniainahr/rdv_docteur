@@ -22,6 +22,7 @@ class AppointmentType extends AbstractType
                 'date_widget' => 'single_text'
             ])
             ->add('end', DateTimeType::class, [
+                'required' => false ,
                 'date_widget' => 'single_text'
             ])
             ->add('allday', CheckboxType::class, [

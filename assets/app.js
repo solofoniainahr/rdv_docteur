@@ -21,6 +21,7 @@ import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 
 $('document').ready(function() {
     $('.select-language').select2();
@@ -36,11 +37,11 @@ $('document').ready(function() {
     });
 
     //Show calendar
-
+    //Call function load calendar data
     const appointments = returnFunc;
     var calendarEl = document.getElementById('calendar');
     var calendar = new Calendar(calendarEl, {
-        plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
+        plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         //initialView: 'timeGridWeek',
         initialView: 'dayGridMonth',
         locale: 'fr',
@@ -55,8 +56,45 @@ $('document').ready(function() {
             'week': 'Semaine',
             'month': 'Mois'
         },
+        events: appointments,
+        editable: true, // don't allow event dragging
+        eventResizableFromStart: true
+    });
+
+    calendar.on('eventChange', (e) => {
+        let doctorId = $('#doctor-id').val()
+        const appointment = e.event;
+        let url = `/doctor/${doctorId}`;
+        let datasApp = {
+            'id': appointment.id,
+            'title': appointment.title,
+            'description': appointment.extendedProps.description,
+            'start': appointment.start,
+            'end': appointment.end,
+            'allDay': appointment.allDay,
+            'backgroundColor': appointment.backgroundColor,
+            'borderColor': appointment.borderColor,
+            'textColor': appointment.borderColor
+        }
+        $.ajax({
+            type: "PUT",
+            url: url,
+            data: datasApp,
+            //dataType: "json",
+            success: function (data) {
+                console.log("success");
+            },
+            error: function(params) {
+              console.error('failed')  
+            }
+        });
+
+        /* console.log(datasApp)
+        let xhr = new XMLHttpRequest();
         
-        events: appointments,  
+        xhr.open('GET', url);
+        xhr.send(JSON.stringify(datasApp));
+        console.log(xhr.status); */
     });
 
     calendar.render();
@@ -75,7 +113,7 @@ function previewFile(input) {
 
         reader.readAsDataURL(file);
     }
-    //let input = e.currentTarget;
+
     $(input).parent().find('.custom-file-label').html(input.files[0].name);
 }
 
@@ -106,7 +144,7 @@ var returnFunc = function() {
             responseData = JSON.parse(data);
         }
     });
-    
+
     return responseData;
 }();
 

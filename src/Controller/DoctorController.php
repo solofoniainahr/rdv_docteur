@@ -15,6 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
+
 class DoctorController extends AbstractController
 {
     #[Route('/doctor/{id<[0-9]+>}', name: 'app_doctor')]
@@ -40,8 +42,40 @@ class DoctorController extends AbstractController
                 'controller_name' => 'DoctorController',
             ]);
         } */
-
-      
+   
+        if ( $request->isXmlHttpRequest() ) {
+            //$dataAppointment = json_decode($request->getContent());
+            $appointment = $ar->find($request->query->get('id')); 
+                if($appointment) {
+                    $code = 200;
+                    $startDate = substr($request->query->get('start'), 4, 20);
+                    $dateStart=date_create($startDate);
+                    
+                    $appointment->setTitle($request->query->get('title'));
+                    $appointment->setDescription($request->query->get('description'));
+                    $appointment->setStart($dateStart);
+                    $appointment->setBackgroundColor($request->query->get('backgroundColor'));
+                    $appointment->setTextColor($request->query->get('textColor'));
+                    $appointment->setBorderColor($request->query->get('borderColor'));
+                    if ( filter_var($request->query->get('allDay'), FILTER_VALIDATE_BOOLEAN) ) {
+                        $appointment->setEnd($dateStart);
+                    }
+                    else {
+                        $endDate = substr($request->query->get('end'), 4, 20);
+                        $dateEnd=date_create($endDate);
+                        $appointment->setEnd($dateEnd);
+                    }
+                $appointment->setAllday(filter_var($request->query->get('allDay'), FILTER_VALIDATE_BOOLEAN));
+                $em = $this->getDoctrine()->getManager();
+                $em->flush();   
+                
+                return new Response('OKKK', $code);
+        }
+        else{
+            return new Response('Les données sont incompletes', 404);
+        }
+            return new Response('ok');
+        }
     
         $appointment = new Appointment;
         $doctor =$ur->find($id);
@@ -107,6 +141,7 @@ class DoctorController extends AbstractController
         return new Response($dataRdv);
         
     }
+    
 }
 
 

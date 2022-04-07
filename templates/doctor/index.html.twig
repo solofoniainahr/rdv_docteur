@@ -76,13 +76,13 @@
                     </div>
                 </div>  
             </div>
+            <hr>
         {% endif %}
-        <hr>
         <div class="row">
             <div class="col-md-12">
                 <div id="calendar"></div>
-                <input type="text" id="doctor-id" value="{{ doctor.id }}"/>
-                <input type="text" id="user-id" value="{{ app.user.id }}"/>
+                <input class="d-none" type="text" id="doctor-id" value="{{ doctor.id }}"/>
+                <input class="d-none"="text" id="user-id" value="{{ app.user.id }}"/>
             </div>
         </div>
     {% endif %}
