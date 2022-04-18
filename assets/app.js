@@ -13,15 +13,10 @@ import $ from 'jquery';
 // start the Stimulus application
 import 'bootstrap';
 
+require('bootstrap-icons/font/bootstrap-icons.css');
 
 import 'select2'; // globally assign select2 fn to $ element
 import 'select2/dist/css/select2.css';
-
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
-import interactionPlugin from '@fullcalendar/interaction';
 
 $('document').ready(function() {
     $('.select-language').select2();
@@ -36,68 +31,6 @@ $('document').ready(function() {
         $('#btn-close-modal-close-rdv').click();
     });
 
-    //Show calendar
-    //Call function load calendar data
-    const appointments = returnFunc;
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new Calendar(calendarEl, {
-        plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
-        //initialView: 'timeGridWeek',
-        initialView: 'dayGridMonth',
-        locale: 'fr',
-        timeZone: 'Europe/Paris',
-        headerToolbar: {
-            start: 'prev,next today',
-            center: 'title',
-            end: 'dayGridMonth,timeGridWeek', 
-        },  
-        buttonText: {
-            'today': 'Aujourd\'hui',
-            'week': 'Semaine',
-            'month': 'Mois'
-        },
-        events: appointments,
-        editable: true, // don't allow event dragging
-        eventResizableFromStart: true
-    });
-
-    calendar.on('eventChange', (e) => {
-        let doctorId = $('#doctor-id').val()
-        const appointment = e.event;
-        let url = `/doctor/${doctorId}`;
-        let datasApp = {
-            'id': appointment.id,
-            'title': appointment.title,
-            'description': appointment.extendedProps.description,
-            'start': appointment.start,
-            'end': appointment.end,
-            'allDay': appointment.allDay,
-            'backgroundColor': appointment.backgroundColor,
-            'borderColor': appointment.borderColor,
-            'textColor': appointment.borderColor
-        }
-        $.ajax({
-            type: "PUT",
-            url: url,
-            data: datasApp,
-            //dataType: "json",
-            success: function (data) {
-                console.log("success");
-            },
-            error: function(params) {
-              console.error('failed')  
-            }
-        });
-
-        /* console.log(datasApp)
-        let xhr = new XMLHttpRequest();
-        
-        xhr.open('GET', url);
-        xhr.send(JSON.stringify(datasApp));
-        console.log(xhr.status); */
-    });
-
-    calendar.render();
 
 });
 
@@ -127,25 +60,5 @@ function showHideDoctorInfo() {
         }
     });
 }
-
-var returnFunc = function() {
-    let doctorId = $('#doctor-id')
-    let userId = $('#user-id');
-    var responseData;
-    $.ajax({
-        async: false,
-        type: "GET",
-        url: "/appointment/load/"+$(doctorId).val() ,
-        data: { 
-            'patientId': $(userId).val(),
-            'doctorId': $(doctorId).val() 
-        },
-        success: function (data) {
-            responseData = JSON.parse(data);
-        }
-    });
-
-    return responseData;
-}();
 
 

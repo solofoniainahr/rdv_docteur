@@ -38,3 +38,24 @@
     height: 100%;
     top: -5px;
 }
+
+.notification {
+    bottom: 10px;
+    left: 7px;
+}
+.nav-item ul {
+    right: -6em;
+    list-style: none;
+    top: 3rem;
+    display: none;
+    /*visibility: hidden;
+    opacity: 0;*/
+}
+.nav-item ul li {
+    //list-style-type: none;
+    width: 250px;
+    padding: 1rem 1rem;
+    border: solid 1px #ccc;
+    background-color: #FFF;
+    cursor: pointer;
+}

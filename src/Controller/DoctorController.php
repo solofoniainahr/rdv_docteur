@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Appointment;
+use App\Entity\Notification;
+use App\Entity\User;
 use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
 use App\Repository\UserRepository;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
@@ -28,7 +31,8 @@ class DoctorController extends AbstractController
     public function index(Request $request, $id, 
                             UserRepository $ur, 
                             EntityManagerInterface $em,
-                            AppointmentRepository $ar): Response
+                            AppointmentRepository $ar,
+                            ): Response
     { 
         //@IsGranted("ROLE_USER")
         
@@ -42,7 +46,7 @@ class DoctorController extends AbstractController
                 'controller_name' => 'DoctorController',
             ]);
         } */
-   
+        
         if ( $request->isXmlHttpRequest() ) {
             //$dataAppointment = json_decode($request->getContent());
             $appointment = $ar->find($request->query->get('id')); 
@@ -86,22 +90,31 @@ class DoctorController extends AbstractController
         if ($appointment_form->isSubmitted() && $appointment_form->isValid()) { 
             $appointment->setPractitioner($doctor);
             $appointment->setPatient($this->getUser());
+            $appointment->setIsRead(false);
             $appointment->setStatus(0);
             $appointment->setCreatedAt(new \DateTime());
             $appointment->setupdatedAt(new \DateTime());
 
-            //dd($appointment);
-
             $em->persist($appointment);
             $em->flush();
+            unset($appointment_form);
 
             $this->addFlash('success', 'Votre rendez-vous a été bien crée');
         }
 
+        $notificationsPatient = $ar->findBy(
+                                [
+                                    'status' => 2,
+                                    'patient'     => $this->getUser()
+                                ], 
+                                [
+                                    'created_at' => 'DESC'
+                                ]);
         
         return $this->render('doctor/index.html.twig', [
             'doctor' => $doctor,
             'appointment_form' => $appointment_form->createView(),
+            'notificationsPatient' => $notificationsPatient
         ]);
     }
 
@@ -140,6 +153,85 @@ class DoctorController extends AbstractController
 
         return new Response($dataRdv);
         
+    }
+
+    /**
+     * @Route("/doctor/read-appointment", name="app_read_appointment")
+     */
+    public function readAppointment(Request $request, AppointmentRepository $ar, EntityManagerInterface $em)
+    {
+
+        $appointment = $ar->find($request->query->get('idAppointment'));
+        $appointment->setStatus(1);
+        $em->flush();
+
+        return new JsonResponse('okk');
+    }
+
+    /**
+     * @Route("/doctor/load-notification", name="app-load-notification")
+     */
+    public function loadNotification(Request $request, AppointmentRepository $ar)
+    {
+        $datas = [];
+
+        $notificationsDoctor = $ar->findBy(
+            [
+                'status'       => 0, //Status 0:creer -1 : lu 2 approuvé 
+                'practitioner' => $this->getUser()],
+            [
+                'created_at'   => 'DESC'
+            ]);
+            
+        //dd($notificationsDoctor);
+
+        foreach ( $notificationsDoctor as $notificationDoctor ) {
+            $datas = [
+                'id'          => $notificationDoctor->getId(),
+                'title'       => $notificationDoctor->getDescription(),
+                'patientname' => $notificationDoctor->getPatient()->getFullName(),
+                'start'       => $notificationDoctor->getStart(),
+                'end'         => $notificationDoctor->getEnd(),
+                'practitoner' => $notificationDoctor->getPractitioner()->getFullName()
+            ];
+        }
+
+        return new  JsonResponse([
+                                'notificationsDoctor' => count($notificationsDoctor) != 0 ? count($notificationsDoctor) : null,
+                                'newNotification' => count($notificationsDoctor) != 0 ? $datas : null
+                            ]);
+
+    }
+
+    #[Route('/doctor/list_appointnntment}', name: 'app_list_appointment')]
+    /**
+     * @Security("is_granted('ROLE_USER')")
+     *
+     * @return Response
+     */
+    public function listAppointment(Request $request, AppointmentRepository $ar)
+    {
+        $notificationsDoctor = $ar->findBy(
+            [
+                'status'       => 0, //Status 0:creer -1 : lu 2 approuvé 
+                'practitioner' => $this->getUser()],
+            [
+                'created_at'   => 'DESC'
+            ]);
+        $notificationsDoctorReadAndNews = $ar->findBy(
+            [
+                'status'       => [0, 1], //Status 0:creer -1 : lu 2 approuvé 
+                'practitioner' => $this->getUser()],
+            [
+                'created_at'   => 'DESC'
+        ]);
+
+        return $this->render('doctor/list_appointment.html.twig', 
+                                [
+                                    'notificationsDoctorReadAndNews' => $notificationsDoctorReadAndNews,
+                                    'notificationsDoctor'            => $notificationsDoctor
+                                ]
+                            );
     }
     
 }

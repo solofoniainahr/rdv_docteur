@@ -13,20 +13,56 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">About</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
-                </li>
                 {% if app.user is not null %}
+                    {% if is_granted('ROLE_DOCTOR') %}
+                        <li class="nav-item position-relative" id="doctor-notif">
+                            <a class="nav-link" href="#">
+                                <span class="position-relative">
+                                    <i id="bi-bell-doctor" class="bi bi-bell">
+                                        {% if notificationsDoctor|length > 0 %}
+                                            <span id="count-doctor-notification" class="badge badge-danger rounded position-absolute notification">
+                                                {{ notificationsDoctor|length }}
+                                            </span>
+                                            {% endif %}
+                                    </i>
+                                </span>
+                            </a>
+                            {% if notificationsDoctorReadAndNews|length > 0 %}
+                                <ul class="dropdown position-absolute" id="doctor-list-notif">
+                                    {% for notificationsDoctorReadAndNew in notificationsDoctorReadAndNews %}
+                                        <li class="appointment_info">
+                                            <input class="d-none" id="txt_appointment_{{notificationsDoctorReadAndNew.id}}" type="text" value="{{notificationsDoctorReadAndNew.id}}">
+                                            <span class="font-weight-bold">{{ notificationsDoctorReadAndNew.patient.fullName}}</span class="text-muted text-sm"> <span>vous a demandé un rendez-vous le {{ notificationsDoctorReadAndNew.start|date }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="position-relative">
+                                    <i class="bi bi-bell">
+                                        {% if notificationsPatient|length > 0 %}
+                                            <span class="badge badge-danger rounded position-absolute notification">
+                                                {{ notificationsPatient|length }}
+                                            </span>
+                                        {% endif %}
+                                    </i>
+                                </span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
                         </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_register') }}">S'enregistrer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_register') }}">S'enregistrer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                        </li>
                 {% endif %}
                 
             </ul>

@@ -142,25 +142,4 @@
     {#{  dump(datas) }#}
     <!--End Modal Add RDV-->
 {% endblock %}
-{# {% block javascripts %}
-    <script>
-        window.onload = () => {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
-                //initialView: 'timeGridWeek',
-                initialView: 'dayGridMonth',
-                locale: 'fr',
-                timeZone: 'Europe/Paris',
-                headerToolbar: {
-                    start: 'prev,next today',
-                    center: 'title',
-                    end: 'dayGridMonth,timeGridWeek', 
-                },  
-                events: {{ datas|raw }},   
-            }); 
-            calendar.render();
-        };
 
-    </script> 
-{% endblock %}#}
